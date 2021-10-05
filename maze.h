@@ -1067,7 +1067,7 @@ public:
                 if (blocks[i].countdown) {
                     idx=vsz-1;
                 } else {
-                    blocks[i].countdown=(rand()%2)+1;
+                    blocks[i].countdown=(rand()%10)+3;
                     idx = rand() % vsz;
                 }
         		m = get_neighboring_node(blocks[i].vpt[idx]);
