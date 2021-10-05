@@ -1155,11 +1155,11 @@ public:
             }
         }
         // for center area
-        int spacing; // x+y distance > 10
+        int spacing; // x^2+y^2 > 30
         int trialerror=0; // 5 times consecutively to stop
         int x,y,cx,cy;
         bool success;
-        while (trialerror<300) {
+        while (trialerror<100) {
             x=rand()%(X-1)+1;
             y=rand()%(Y-1)+1;
             if (grid[x][y]) continue;
