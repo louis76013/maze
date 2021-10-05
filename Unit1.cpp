@@ -66,6 +66,7 @@ void __fastcall TForm1::Timer1Timer(TObject *Sender) // build walls
 
     if (maze.is_maze_ready()) {
         Timer1->Enabled =False;
+        update_map();
         return;
     }
     maze.grow_blocks();
@@ -113,6 +114,7 @@ void maze_progression() {
 void __fastcall TForm1::StepClick(TObject *Sender)
 {
     maze_progression();
+    if (maze.is_map_ready()) update_map();
     DefocusControl(Step,true);
 }
 //---------------------------------------------------------------------------
@@ -341,6 +343,28 @@ void __fastcall TForm1::Timer2Timer(TObject *Sender)
         Timer2->Enabled=false;
         AimoveClick(Aimove);
     }
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm1::HelpClick(TObject *Sender)
+{
+    ShowMessage("How to play: .\n"
+                "Use arrow keys to steer Blue-Dot around.\n"
+                "Space bar to stay in place, but Red-Dots are still in motion.\n"
+                "Make a mouse click on the maze any time to relocate Blue-Dot.\n"
+                "Visit all 5 Green-Dots to win the game.\n"
+                "If Blue_Dot got captured, either\n"
+                "Continue: to relocate Blue-Dot and Red-Dots, or\n"
+                "New Game: to restart the game with the same maze\n\n"
+
+                "Reset: to clear the maze, make it ready for building a new maze\n\n"
+                "Wall: to build the maze step by step\n\n"
+                "Maze: to toggle automation of maze building\n\n"
+                "Auto: equivalent to click Reset, Maze, and AI Move\n\n"
+                "Guide: to high light over all deadend alleys\n\n"
+                "Radar: to high light nearby deadend alleyses\n\n"
+                "Freeway: to keey the outer track clear of walls when generating a maze");
+
 }
 //---------------------------------------------------------------------------
 
