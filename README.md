@@ -12,7 +12,7 @@ Download the file maze.exe. While doing so a warning from the browser may appear
 ```C++
     int grow_blocks() { // each time grow 1 wall from each block
         int csz, idx, vsz, in_progress,m;
-		Pos pt;
+	Pos pt;
         pt.x=-1;
         pt.y=-1;
         Line line;
