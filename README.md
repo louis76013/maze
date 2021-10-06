@@ -8,7 +8,62 @@ Download the file maze.exe. While doing so a warning from the browser may appear
 2. there are a few APIs designed for button click function calls
 3. the UI is done by Borland C++ Builder, because it's cleaner and easier, and the key point is that it support standard C++, as versus  Visual family
 # Snippet
-### recursive search
+### Maze generating
+```C++
+int grow_blocks() { // each time grow 1 wall from each block
+        int csz, idx, vsz, in_progress,m;
+		Pos pt;
+        pt.x=-1;
+        pt.y=-1;
+        Line line;
+
+        if (map_ready) return 0;
+
+        csz=blocks.size();
+        for (int i=0;i<csz;i++) {
+            vsz=blocks[i].vpt.size();
+            if (vsz==0) continue;
+            while (vsz) { // try to add a wall to the block if possible
+                if (blocks[i].countdown) { // keeps growing the same branch
+                    idx=vsz-1; // which is from the top of the vector
+                } else {
+                    blocks[i].countdown=(rand()%10)+3; // how long would the new branch be
+                    idx = rand() % vsz; // from where does the new branch start
+                }
+        		m = get_neighboring_node(blocks[i].vpt[idx]);//m:0~3 direction
+                pt.x=blocks[i].vpt[idx].x+dir[m][0];
+                pt.y=blocks[i].vpt[idx].y+dir[m][1];
+                if (m>=0) { // there is room to grow the block
+	    		    grid[pt.x][pt.y] = 2;
+    	    		blocks[i].vpt.push_back(pt); //growth record/prolific point
+                    line.p1=blocks[i].vpt[idx];
+                    line.p2=pt;
+                    line.d=m;
+                    blocks[i].qln.push(line); // for UI drawing
+                    build_wall(line); // add to array walls[60][40][4]
+                    blocks[i].countdown--;
+                    break; // a new wall added
+    	        } else { // no room to grow, try another starting point
+                    blocks[i].vpt.erase(blocks[i].vpt.begin()+idx); // no more prolific
+                    blocks[i].countdown=0; // grow as a new branch
+                }
+                vsz=blocks[i].vpt.size();
+            }
+        }
+
+        in_progress=0;
+        for (int i=0;i<csz;i++) {
+            vsz=blocks[i].vpt.size();
+            if (vsz) in_progress++;
+        }
+        if (in_progress==0) { // nothong to build this time
+            maze_ready=true;
+            map_ready=false;
+            init_map();
+        }
+        return in_progress;
+    }
+### Explore dead end alleys
 ```C++
     int recur_search(Pos pt, int di, int depth) { // search and mark deadend alley
         depth--; // search depth limitation
@@ -54,7 +109,8 @@ Download the file maze.exe. While doing so a warning from the browser may appear
         }
         return vsz; // not dead end, still open, no result
     }
-
+### Compare directions for approaching target
+```C++
  int recur_relay3(Pos pt, int di, int depth, Pos startpos,int nearest3, int &dist) {
         depth--; // search depth limitation
         if (depth<0) {
