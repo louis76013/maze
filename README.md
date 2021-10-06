@@ -7,10 +7,10 @@ Download the file maze.exe. While doing so a warning from the browser may appear
 1. the main logic is implemented in standard C++ which is portable for Linux
 2. there are a few APIs designed for button click function calls
 3. the UI is done by Borland C++ Builder, because it's cleaner and easier, and the key point is that it support standard C++, as versus  Visual family
-# Snippet
+## Snippet
 ### Maze generating
 ```C++
-int grow_blocks() { // each time grow 1 wall from each block
+    int grow_blocks() { // each time grow 1 wall from each block
         int csz, idx, vsz, in_progress,m;
 		Pos pt;
         pt.x=-1;
@@ -30,7 +30,7 @@ int grow_blocks() { // each time grow 1 wall from each block
                     blocks[i].countdown=(rand()%10)+3; // how long would the new branch be
                     idx = rand() % vsz; // from where does the new branch start
                 }
-        		m = get_neighboring_node(blocks[i].vpt[idx]);//m:0~3 direction
+      		m = get_neighboring_node(blocks[i].vpt[idx]);//m:0~3 direction
                 pt.x=blocks[i].vpt[idx].x+dir[m][0];
                 pt.y=blocks[i].vpt[idx].y+dir[m][1];
                 if (m>=0) { // there is room to grow the block
@@ -113,7 +113,7 @@ int grow_blocks() { // each time grow 1 wall from each block
 ```   
 ### Compare directions for approaching target
 ```C
- int recur_relay3(Pos pt, int di, int depth, Pos startpos,int nearest3, int &dist) {
+    int recur_relay3(Pos pt, int di, int depth, Pos startpos,int nearest3, int &dist) {
         depth--; // search depth limitation
         if (depth<0) {
             return nearest3; // nearest3 is the distance of the..
@@ -163,4 +163,32 @@ int grow_blocks() { // each time grow 1 wall from each block
         }
         return sml; // return the smallest nearest3
     }
+```
+## Pseudo code - inheritance / virtual function / static member / pointer to parent
+```C++
+class Runner {
+public:
+    Info (*map_info)[60][40]; // a pointer to maze member
+    virtual hit_wall(Pos,int); // intended to be overriden by child object
+    static int dir[4][2]; // to be shared by all child classes
+};
+int Runner::dir[4][2]={-1,0,0,-1,1,0,0,1}; // initialize a static class member
+
+class Player:public Runner { // inherit base class
+public:
+    vector<Runner> *ghosts; // undefined ghost number
+    hit_wall(Pos,int);
+};
+
+class Maze {
+public:
+    Info map_info[60][40]; // to be shared in the game
+    Player player; // there will be one player
+    vector<Runner> ghosts; // uncertain number of ghosts
+
+    Maze() {
+        player.map_info=&map_info; // pass down the address to members
+        player.ghosts=&ghosts; // pass down the address of ghost objects to player
+    }
+};
 ```
