@@ -63,8 +63,9 @@ int grow_blocks() { // each time grow 1 wall from each block
         }
         return in_progress;
     }
+```
 ### Explore dead end alleys
-```C++
+```C
     int recur_search(Pos pt, int di, int depth) { // search and mark deadend alley
         depth--; // search depth limitation
         if (depth<0) return 2; // abort search
@@ -109,8 +110,9 @@ int grow_blocks() { // each time grow 1 wall from each block
         }
         return vsz; // not dead end, still open, no result
     }
+```   
 ### Compare directions for approaching target
-```C++
+```C
  int recur_relay3(Pos pt, int di, int depth, Pos startpos,int nearest3, int &dist) {
         depth--; // search depth limitation
         if (depth<0) {
@@ -161,3 +163,4 @@ int grow_blocks() { // each time grow 1 wall from each block
         }
         return sml; // return the smallest nearest3
     }
+```
