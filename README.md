@@ -8,7 +8,7 @@ Download the file maze.exe. While doing so a warning from the browser may appear
 2. there are a few APIs designed for button click function calls
 3. the UI is done by Borland C++ Builder, because it's cleaner and easier, and the key point is that it support standard C++, as versus  Visual family
 # Snippet
-
+### recursive search
 ```C++
     int recur_search(Pos pt, int di, int depth) { // search and mark deadend alley
         depth--; // search depth limitation
