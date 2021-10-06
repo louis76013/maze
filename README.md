@@ -164,7 +164,7 @@ Download the file maze.exe. While doing so a warning from the browser may appear
         return sml; // return the smallest nearest3
     }
 ```
-## Pseudo code - inheritance / virtual function / static member / pointer to parent
+## Pseudo code - inheritance / virtual function / static member / child-to-parent pointer
 ```C++
 class Runner {
 public:
