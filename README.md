@@ -54,3 +54,54 @@ Download the file maze.exe. While doing so a warning from the browser may appear
         }
         return vsz; // not dead end, still open, no result
     }
+
+ int recur_relay3(Pos pt, int di, int depth, Pos startpos,int nearest3, int &dist) {
+        depth--; // search depth limitation
+        if (depth<0) {
+            return nearest3; // nearest3 is the distance of the..
+        }                    // ..closest 3/4-way intersection to beacon
+        vector<int> vd;
+        Pos npt;
+        int dt,ret,sml; // turn around direction
+        int vsz,result,dis2ent;
+        npt.x=pt.x+dir[di][0];
+        npt.y=pt.y+dir[di][1];
+        if ((*beacons)[target_beacon].p==npt) {
+            if (depth>dist) { // initial dist is -99
+                dist=depth; // dist is set for one time only, as depth is decreasing
+            }         // the first time beacon found, store depth to dist
+            return 1;
+        }
+//        if (npt.x==startpos.x && npt.y==startpos.y) {
+//            return nearest3; // if circling around
+//        }
+        if ((*beacons)[target_beacon].entrance.p==npt) {
+            if (depth>dist) { // if there are multiple branches found beacon..
+                dist=depth; // they all have return value as 1..
+            }             // we need to know which search branch has the..
+            return 1;    // shortest approach to beacon, which is dist
+        }
+        if ((*map_info)[npt.x][npt.y].ways>=3) {
+            dis2ent=abs((*beacons)[target_beacon].entrance.p.x-npt.x);
+            dis2ent+=abs((*beacons)[target_beacon].entrance.p.y-npt.y);
+            if (dis2ent<nearest3) {
+                nearest3=dis2ent; // keep getting the smallest nearest3
+            }
+        }
+        dt=(di+2)%4; // opposite direction, which is the coming direction
+        for (int i=0;i<4;i++) { // to find out how many valid directions to go
+            if (i==dt) continue; // do not search this
+            if (not_road(npt,i)) continue; // not a valid way to go
+            vd.push_back(i); // store possible directions of search
+        }
+        vsz=vd.size();
+        sml=nearest3;
+        for (int j=0;j<vsz;j++) { // search further
+//          nextpos.x=pt.x+dir[vd[j]][0];
+//          nextpos.y=pt.y+dir[vd[j]][1];
+//          if (nextpos.x==startpos.x && nextpos.y==startpos.y) return nearest3; // if circling around
+            ret=recur_relay3(npt,vd[j],depth,startpos,nearest3,dist);
+            if (ret<sml) sml=ret; // compare return values from child branches
+        }
+        return sml; // return the smallest nearest3
+    }
