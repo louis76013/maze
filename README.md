@@ -10,39 +10,47 @@ Download the file maze.exe. While doing so a warning from the browser may appear
 # Snippet
 
 ```C++
- bool explore_map() {
-        //if (!maze_ready) return false;
+    int recur_search(Pos pt, int di, int depth) { // search and mark deadend alley
+        depth--; // search depth limitation
+        if (depth<0) return 2; // abort search
+
         vector<int> vd;
-        Pos pt;
-        bool found; // found suitable starting point
-        int result;
-//        openspace=false;
-        memset(deadendnote,0,sizeof(int)*60*40);
-        for (int i=30-6;i<30+6;i++) { // select starting point
-            for (int j=20-4;j<20+4;j++) {
-                vd.resize(0);
-                found=false;
-                pt.x=i;
-                pt.y=j;
-                for (int di=0;di<4;di++) {
-                    if (hit_wall2(pt,di)) continue;
-                    vd.push_back(di);
+        Pos nextpos;
+        int dt; // turn around direction
+        int vsz,result;
+        dt=(di+2)%4; // opposite direction, which is the coming direction
+        for (int i=0;i<4;i++) { // to find out how many valid directions to go
+            if (i==dt) continue; // do not search this
+            if (hit_wall2(pt,i)) continue; // not a valid way to go
+            vd.push_back(i); // store possible directions of search
+        }
+
+        vsz=vd.size();
+        if (vsz==0) { // if this is a dead end
+            deadendnote[pt.x][pt.y]=-1; // mark this pos
+            (*map_info)[pt.x][pt.y].type=-1;
+            return -1; // as dead end return value
+        }
+
+        for (int j=0;j<vd.size();j++) { // search further
+            nextpos.x=pt.x+dir[vd[j]][0];
+            nextpos.y=pt.y+dir[vd[j]][1];
+            if (searched[nextpos.x][nextpos.y]) continue; // already searched by other branches
+
+            result=recur_search(nextpos,vd[j],depth);
+            if (result<0) { // if next pos a dead end
+                if (vd.size()==1) { // and this is a tunnel
+                    deadendnote[pt.x][pt.y]=-1; // make a note, backing out from a deadend 
+                    (*map_info)[pt.x][pt.y].type=-1;
+                    return -1; // report back to caller
                 }
-                if (vd.size()<3) continue; // not a 3-way intersection
-//                if (vd.size()>3) {
-//                    return false; // open space, map not ready
-//                }
-                found=true;
-                break;
             }
-            if (found) break;
+            if (result>2) { // next pos is 4-way intersection
+                if (vsz>2) { // current pos is also a 4-way intersection
+                    return vsz; // an open space, maze is not complete
+                }
+            }
+//          if (nextpos.x==startpos.x && nextpos.y==startpos.y) return vsz; // if circling around
         }
-        // reset deadendnote before
-        goodstarter=found;
-        memset(searched,0,sizeof(int)*60*40);
-        searched[pt.x][pt.y]=1;
-        for (int i=0;i<vd.size();i++) {
-            recur_search(pt,vd[i],120);
-        }
-        return true;
+        return vsz; // not dead end, still open, no result
     }
