@@ -6,5 +6,4 @@ Download the file maze.exe. While doing so a warning from the browser may appear
 ### The project
 1. the main logic is implemented in standard C++ which is portable for Linux
 2. there are a few APIs designed for button click function calls
-3. the UI is done by Borland C++ Builder, because it's cleaner and easier, and the key point is that it support standard C++, as versus to Visual family
-  
+3. the UI is done by Borland C++ Builder, because it's cleaner and easier, and the key point is that it support standard C++, as versus  Visual family
